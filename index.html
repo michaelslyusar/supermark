@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SuperMark Mass Lab</title>
+  <title>No More DRISH</title>
   <meta name="description" content="Build high-calorie, high-protein shakes for lean weight gain." data-i18n-attr="content:meta.description">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,8 +27,8 @@
       <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M3 5.5h14M3 10h14M3 14.5h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
     </button>
     <div class="brand">
-      <img class="brand-mark" src="assets/logo/logo.webp" alt="" width="40" height="40">
-      <span class="brand-name">SuperMark <b>Mass Lab</b></span>
+      <img class="brand-mark" src="assets/logo/logo.webp" alt="" width="56" height="56">
+      <span class="brand-name">No More DRISH</span>
     </div>
     <nav id="mainTabs" class="tabs" role="tablist" aria-label="Sections" data-i18n-attr="aria-label:nav.sections">
       <button class="tab" role="tab" id="tab-shake" aria-controls="panel-shake" data-tab="shake" data-i18n="tab.shake">Shake builder</button>
@@ -139,6 +139,36 @@
             <span id="demoFull" class="demo-full" hidden data-i18n="demo.full">The glass is full.</span>
           </p>
         </div>
+      </div>
+    </section>
+
+    <!-- Why it works (left) and the joke as an equation (right): skinny + a shake = huge tattooed arms. -->
+    <section class="equation" aria-labelledby="equationTitle">
+      <div class="equation-copy">
+        <h2 id="equationTitle" class="section-title" data-i18n="equation.title">The math is simple.</h2>
+        <p data-i18n="equation.body1">One 800&nbsp;kcal shake a day adds 5,600&nbsp;kcal a week on top of your meals.</p>
+        <p data-i18n="equation.body2">That's the surplus most skinny guys never reach by eating alone.</p>
+        <button id="equationTry" class="btn btn-primary" type="button" data-i18n="equation.try">Try it on the glass above</button>
+        <p class="equation-note" data-i18n="equation.note">Results not guaranteed. Tattoos sold separately.</p>
+      </div>
+      <div class="equation-row">
+        <figure class="eq-card">
+          <img src="assets/homepage/1-skinny.webp" width="240" height="831" loading="lazy"
+               alt="A skinny guy in a white T-shirt and black jeans" data-i18n-attr="alt:equation.altBefore">
+          <figcaption data-i18n="equation.before">You, today</figcaption>
+        </figure>
+        <span class="eq-op" aria-hidden="true">+</span>
+        <figure class="eq-card eq-shake">
+          <img src="assets/homepage/smoothie.webp" width="430" height="800" loading="lazy"
+               alt="A peanut butter oat shake" data-i18n-attr="alt:equation.altShake">
+          <figcaption data-i18n="equation.shake">One mass shake a day</figcaption>
+        </figure>
+        <span class="eq-op" aria-hidden="true">=</span>
+        <figure class="eq-card">
+          <img src="assets/homepage/3-tattooed-arms.webp" width="468" height="1014" loading="lazy"
+               alt="The same guy with huge, tattooed arms" data-i18n-attr="alt:equation.altAfter">
+          <figcaption data-i18n="equation.after">Future you</figcaption>
+        </figure>
       </div>
     </section>
 
@@ -346,7 +376,7 @@
   </main>
   </div>
 
-  <footer data-i18n="footer">SuperMark Mass Lab · Nutrition values are estimates per serving.</footer>
+  <footer data-i18n="footer">No More DRISH · Nutrition values are estimates per serving.</footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>

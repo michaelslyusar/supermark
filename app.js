@@ -626,6 +626,12 @@ function startDemo() {
 }
 
 $("demoEmpty").addEventListener("click", emptyDemo);
+// "Try it on the glass above": back up to the demo, focused on its first ingredient.
+$("equationTry").addEventListener("click", () => {
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelector(".demo").scrollIntoView({ behavior: still ? "auto" : "smooth", block: "center" });
+  document.querySelector(".demo-ing")?.focus({ preventScroll: true });
+});
 
 // ---------- tabs ----------
 function showTab(name) {

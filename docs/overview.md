@@ -1,6 +1,6 @@
-# SuperMark Mass Lab: what the site contains and does
+# No More DRISH: what the site contains and does
 
-SuperMark Mass Lab is a one-page web app for building high-calorie, high-protein shakes for gaining weight. Users pick ingredients and portions, the calorie and macro totals update as they go, and they can save shakes to a private history. It's plain HTML and JavaScript, with Supabase for accounts and storage.
+No More DRISH is a one-page web app for building high-calorie, high-protein shakes for gaining weight. Users pick ingredients and portions, the calorie and macro totals update as they go, and they can save shakes to a private history. It's plain HTML and JavaScript, with Supabase for accounts and storage.
 
 ## 1. Accounts
 

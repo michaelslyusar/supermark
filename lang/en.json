@@ -1,5 +1,5 @@
 {
-  "meta.title": "SuperMark Mass Lab",
+  "meta.title": "No More DRISH",
   "meta.description": "Build high-calorie, high-protein shakes for lean weight gain.",
   "nav.sections": "Sections",
   "nav.menu": "Menu",
@@ -22,6 +22,17 @@
   "landing.ctaLogin": "I have an account",
   "landing.noEmail": "No email needed, just a username and password.",
   "landing.featuresTitle": "What you can do",
+  "equation.title": "The math is simple.",
+  "equation.body1": "One 800 kcal shake a day adds 5,600 kcal a week on top of your meals.",
+  "equation.body2": "That's the surplus most skinny guys never reach by eating alone.",
+  "equation.try": "Try it on the glass above",
+  "equation.before": "You, today",
+  "equation.shake": "One mass shake a day",
+  "equation.after": "Future you",
+  "equation.note": "Results not guaranteed. Tattoos sold separately.",
+  "equation.altBefore": "A skinny guy in a white T-shirt and black jeans",
+  "equation.altShake": "A peanut butter oat shake",
+  "equation.altAfter": "The same guy with huge, tattooed arms",
   "landing.f1.title": "See totals as you build",
   "landing.f1.text": "Calories, protein, carbs and fat update with every ingredient, measured against an 800 kcal mass shake.",
   "landing.f2.title": "Use real portions",
@@ -216,5 +227,5 @@
   "ing.honey": "Honey",
   "ing.cocoa_powder": "Unsweetened Cocoa Powder",
 
-  "footer": "SuperMark Mass Lab · Nutrition values are estimates per serving."
+  "footer": "No More DRISH · Nutrition values are estimates per serving."
 }
