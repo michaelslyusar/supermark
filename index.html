@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SuperMark Mass Lab</title>
+  <meta name="description" content="Build high-calorie, high-protein shakes for lean weight gain." data-i18n-attr="content:meta.description">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Both families include Cyrillic, so Russian text uses the same faces. -->
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!--
+    Text is translated from lang/<code>.json:
+      data-i18n="key"            → element text
+      data-i18n-attr="attr:key"  → attributes (comma-separated)
+    The English text below is what shows before the language file loads.
+  -->
+  <header class="site-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><rect x="1" y="9" width="2" height="6" rx=".5"/><rect x="4" y="6" width="3" height="12" rx="1"/><rect x="7" y="11" width="10" height="2"/><rect x="17" y="6" width="3" height="12" rx="1"/><rect x="21" y="9" width="2" height="6" rx=".5"/></svg>
+      </span>
+      <span class="brand-name">SuperMark <b>Mass Lab</b></span>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Sections" data-i18n-attr="aria-label:nav.sections">
+      <button class="tab" role="tab" id="tab-shake" aria-controls="panel-shake" data-tab="shake" data-i18n="tab.shake">Shake builder</button>
+      <button class="tab" role="tab" id="tab-history" aria-controls="panel-history" data-tab="history" data-i18n="tab.history">My shakes</button>
+      <button class="tab" role="tab" id="tab-quiz" aria-controls="panel-quiz" data-tab="quiz" data-i18n="tab.quiz">Food profile</button>
+      <button class="tab" role="tab" id="tab-list" aria-controls="panel-list" data-tab="list" data-i18n="tab.list">My ingredients</button>
+    </nav>
+    <div class="account">
+      <div class="account-row">
+        <span id="accountName" class="account-name" hidden></span>
+        <button id="registerOpen" class="btn btn-ghost btn-sm" data-i18n="account.register">Register</button>
+        <button id="loginOpen" class="btn btn-primary btn-sm" data-i18n="account.login">Log in</button>
+        <button id="logoutBtn" class="btn btn-ghost btn-sm" hidden data-i18n="account.logout">Log out</button>
+      </div>
+      <div class="lang-switch" role="group" aria-label="Language" data-i18n-attr="aria-label:lang.label">
+        <button type="button" class="lang-btn" data-lang="en" lang="en">EN</button>
+        <button type="button" class="lang-btn" data-lang="ru" lang="ru">RU</button>
+      </div>
+    </div>
+  </header>
+
+  <dialog id="authDialog" class="auth-dialog" aria-labelledby="authTitle">
+    <form id="authForm" class="auth-form">
+      <h2 id="authTitle">Log in</h2>
+      <p id="authHint" class="hint">Welcome back. Log in to see your food profile.</p>
+      <label class="field">
+        <span data-i18n="auth.username">Username</span>
+        <input id="authUser" name="username" autocomplete="username" required minlength="3" maxlength="20"
+               pattern="[A-Za-z0-9_]{3,20}" title="3–20 letters, numbers or underscores" data-i18n-attr="title:auth.usernameRule">
+      </label>
+      <label class="field">
+        <span data-i18n="auth.password">Password</span>
+        <input id="authPass" name="password" type="password" autocomplete="current-password" required minlength="6">
+      </label>
+      <p id="authError" class="form-error" role="alert"></p>
+      <div class="actions">
+        <button id="authSubmit" class="btn btn-primary">Log in</button>
+        <button id="authCancel" class="btn btn-link" type="button" data-i18n="auth.cancel">Cancel</button>
+      </div>
+      <p class="auth-switch">
+        <span id="authSwitchText">Don't have an account?</span>
+        <button id="authSwitch" class="link-btn" type="button">Register</button>
+      </p>
+    </form>
+  </dialog>
+
+  <!-- Exact contents of a logged shake or favorite stack; filled by openShakeDetails() in app.js. -->
+  <dialog id="shakeDialog" class="shake-dialog" aria-labelledby="shakeDialogTitle">
+    <div class="shake-dialog-head">
+      <div>
+        <h2 id="shakeDialogTitle"></h2>
+        <p class="hint"><time id="shakeDialogDate"></time> · <span id="shakeDialogCount"></span></p>
+      </div>
+      <button id="shakeDialogClose" class="dialog-close" type="button" aria-label="Close" data-i18n-attr="aria-label:shake.close">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <ul id="shakeDialogList" class="detail-list"></ul>
+    <div class="detail-total">
+      <p class="detail-total-kcal"><span data-i18n="shake.total">Total</span> <b id="shakeDialogKcal">0</b> <span data-i18n="macros.kcal">kcal</span></p>
+      <dl class="macro-grid">
+        <div class="macro protein"><dt data-i18n="macros.protein">Protein</dt><dd id="shakeDialogProtein">0</dd></div>
+        <div class="macro carbs"><dt data-i18n="macros.carbs">Carbs</dt><dd id="shakeDialogCarbs">0</dd></div>
+        <div class="macro fat"><dt data-i18n="macros.fat">Fat</dt><dd id="shakeDialogFat">0</dd></div>
+      </dl>
+    </div>
+  </dialog>
+
+  <div class="status-wrap"><p id="status" class="status" role="status"></p></div>
+
+  <!-- Two views: the landing page when logged out, the dashboard when logged in.
+       Both stay hidden until the saved session has been checked, so neither flashes. -->
+  <div id="landing" class="landing" hidden>
+    <section class="landing-hero">
+      <div class="hero-copy">
+        <h1 data-i18n="hero.title">Drink your surplus.</h1>
+        <p class="lede" data-i18n="hero.lede">Build high-calorie shakes from everyday ingredients, see calories and protein add up as you go, and keep the ones that work.</p>
+        <div class="actions hero-actions">
+          <button class="btn btn-primary btn-lg" data-auth="signup" data-i18n="landing.ctaStart">Create free account</button>
+          <button class="btn btn-ghost btn-lg" data-auth="login" data-i18n="landing.ctaLogin">I have an account</button>
+        </div>
+        <p class="hero-note" data-i18n="landing.noEmail">No email needed, just a username and password.</p>
+      </div>
+
+      <!-- Live demo: each tap pours one serving into the glass. Values match the built-in ingredients. -->
+      <div class="demo">
+        <div class="glass-wrap" aria-hidden="true">
+          <div class="glass">
+            <div id="demoFill" class="glass-fill"></div>
+            <div class="glass-mark" style="bottom: 33.333%"><span>400</span></div>
+            <div class="glass-mark goal" style="bottom: 66.667%"><span id="demoGoalMark">800 kcal goal</span></div>
+          </div>
+        </div>
+        <div class="demo-panel">
+          <div class="demo-readout" aria-live="polite">
+            <p class="demo-kcal"><span id="demoKcal">0</span> <span data-i18n="macros.kcal">kcal</span></p>
+            <p id="demoGoal" class="demo-goal">of an 800 kcal shake</p>
+            <dl class="demo-macros">
+              <div class="protein"><dt data-i18n="macros.protein">Protein</dt><dd id="demoProtein">0g</dd></div>
+              <div class="carbs"><dt data-i18n="macros.carbs">Carbs</dt><dd id="demoCarbs">0g</dd></div>
+              <div class="fat"><dt data-i18n="macros.fat">Fat</dt><dd id="demoFat">0g</dd></div>
+            </dl>
+          </div>
+          <p class="demo-hint" data-i18n="demo.hint">Tap an ingredient to add a serving.</p>
+          <div id="demoTray" class="demo-tray"></div>
+          <p class="demo-foot">
+            <button id="demoEmpty" class="link-btn" type="button" data-i18n="demo.empty">Empty the glass</button>
+            <span id="demoFull" class="demo-full" hidden data-i18n="demo.full">The glass is full.</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-section">
+      <h2 class="section-title" data-i18n="landing.featuresTitle">What you can do</h2>
+      <div class="features">
+        <article class="feature">
+          <h3 data-i18n="landing.f1.title">See totals as you build</h3>
+          <p data-i18n="landing.f1.text">Calories, protein, carbs and fat update with every ingredient, measured against an 800 kcal mass shake.</p>
+        </article>
+        <article class="feature">
+          <h3 data-i18n="landing.f2.title">Use real portions</h3>
+          <p data-i18n="landing.f2.text">Two bananas, one and a half glasses of milk. Set any ingredient in half-portion steps.</p>
+        </article>
+        <article class="feature">
+          <h3 data-i18n="landing.f3.title">Hide what you won't eat</h3>
+          <p data-i18n="landing.f3.text">Rate ingredients once in your food profile, and the ones you avoid drop out of the builder.</p>
+        </article>
+        <article class="feature">
+          <h3 data-i18n="landing.f4.title">Keep a private log</h3>
+          <p data-i18n="landing.f4.text">Every shake is saved with its exact ingredients and macros. Only you can see your history.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="landing-section">
+      <h2 class="section-title" data-i18n="landing.stepsTitle">How it works</h2>
+      <ol class="steps">
+        <li><b data-i18n="landing.s1.title">Create an account</b><span data-i18n="landing.s1.text">Pick a username and password. It takes ten seconds.</span></li>
+        <li><b data-i18n="landing.s2.title">Build your shake</b><span data-i18n="landing.s2.text">Choose ingredients and portions until the totals hit your target.</span></li>
+        <li><b data-i18n="landing.s3.title">Name it and log it</b><span data-i18n="landing.s3.text">Your shakes stay in your history, ready to make again tomorrow.</span></li>
+      </ol>
+    </section>
+
+    <section class="landing-cta">
+      <h2 data-i18n="landing.ctaTitle">Your first shake takes a minute.</h2>
+      <button class="btn btn-primary btn-lg" data-auth="signup" data-i18n="landing.ctaStart">Create free account</button>
+    </section>
+  </div>
+
+  <div id="dashboard" hidden>
+  <section class="dash-head">
+    <p class="eyebrow" data-i18n="dash.eyebrow">Dashboard</p>
+    <h1 id="dashGreeting">Welcome back</h1>
+  </section>
+
+  <main>
+
+    <div class="panel" role="tabpanel" id="panel-shake" aria-labelledby="tab-shake">
+      <div class="builder">
+        <section class="card">
+          <div class="card-head">
+            <h2 data-i18n="builder.title">Choose your ingredients</h2>
+            <p class="hint" data-i18n="builder.hint">Select everything that goes in the blender. Macros are per listed serving.</p>
+          </div>
+          <div id="ingredients" class="ingredients"></div>
+          <p id="hiddenNote" class="hidden-note" hidden>
+            <span id="hiddenCount"></span>
+            <button id="showAvoided" class="link-btn" type="button" data-i18n="builder.manageAvoided">Manage in My ingredients</button>
+          </p>
+        </section>
+
+        <aside class="card macros" aria-labelledby="macrosTitle">
+          <h2 id="macrosTitle" data-i18n="macros.title">Shake totals</h2>
+          <div class="kcal">
+            <span id="totalKcal" class="kcal-value">0</span>
+            <span class="kcal-unit" data-i18n="macros.kcal">kcal</span>
+          </div>
+          <div class="goal">
+            <div class="goal-bar" role="progressbar" aria-labelledby="goalLabel" aria-valuemin="0" aria-valuemax="100" id="goalBar">
+              <span id="goalFill" class="goal-fill"></span>
+            </div>
+            <p id="goalLabel" class="goal-label">0% of an 800 kcal mass shake</p>
+          </div>
+          <dl class="macro-grid">
+            <div class="macro protein"><dt data-i18n="macros.protein">Protein</dt><dd><span id="totalProtein">0</span><span data-i18n="macros.gramsSuffix">g</span></dd></div>
+            <div class="macro carbs"><dt data-i18n="macros.carbs">Carbs</dt><dd><span id="totalCarbs">0</span><span data-i18n="macros.gramsSuffix">g</span></dd></div>
+            <div class="macro fat"><dt data-i18n="macros.fat">Fat</dt><dd><span id="totalFat">0</span><span data-i18n="macros.gramsSuffix">g</span></dd></div>
+          </dl>
+          <p id="selCount" class="hint">No ingredients selected</p>
+          <label class="field shake-name-field">
+            <span data-i18n="shake.nameLabel">Shake name</span>
+            <input id="shakeName" maxlength="100" autocomplete="off" placeholder="e.g. Morning bulk shake"
+                   data-i18n-attr="placeholder:shake.namePlaceholder">
+          </label>
+          <div class="actions">
+            <button id="shakeBtn" class="btn btn-primary" data-i18n="actions.logShake" disabled>Log this shake</button>
+            <button id="pickBtn" class="btn btn-ghost" data-i18n="actions.saveFavorites">Save as favorites</button>
+          </div>
+        </aside>
+      </div>
+
+      <section class="card">
+        <div class="card-head card-head-row">
+          <div>
+            <h2 data-i18n="recent.title">Recent shakes</h2>
+            <p class="hint" data-i18n="recent.hint">Your last 3 logged shakes and favorite stacks.</p>
+          </div>
+          <button id="viewAllShakes" class="link-btn" type="button" hidden>View all →</button>
+        </div>
+        <ul id="entries" class="entries"></ul>
+        <p id="emptyMsg" class="empty"></p>
+      </section>
+    </div>
+
+    <div class="panel" role="tabpanel" id="panel-history" aria-labelledby="tab-history" hidden>
+      <section class="card">
+        <div class="card-head">
+          <h2 data-i18n="history.title">My shakes</h2>
+          <p class="hint"><span data-i18n="history.hint">Every shake and favorite stack you've logged. Only you can see them.</span> <span id="historyCount"></span></p>
+        </div>
+        <ul id="allEntries" class="entries"></ul>
+        <p id="allEmptyMsg" class="empty"></p>
+      </section>
+    </div>
+
+    <div class="panel" role="tabpanel" id="panel-quiz" aria-labelledby="tab-quiz" hidden>
+      <section class="card quiz">
+        <p id="quizProgress" class="quiz-progress"></p>
+        <div id="quizCard" class="quiz-card">
+          <div id="quizEmoji" class="quiz-emoji"></div>
+          <h2 id="quizName"></h2>
+          <p id="quizMeta" class="hint"></p>
+          <p id="quizCurrent" class="quiz-current"></p>
+          <div class="actions quiz-actions">
+            <button id="quizLike" class="btn btn-primary" data-i18n="quiz.like">I'd eat this</button>
+            <button id="quizDislike" class="btn btn-danger" data-i18n="quiz.dislike">Not for me</button>
+            <button id="quizSkip" class="btn btn-ghost" data-i18n="quiz.skip">Skip</button>
+          </div>
+        </div>
+        <div id="quizDone" class="quiz-card" hidden>
+          <div class="quiz-emoji">✓</div>
+          <h2 data-i18n="quiz.doneTitle">Profile complete</h2>
+          <p class="hint" data-i18n="quiz.doneHint">You can change any answer in “My ingredients”.</p>
+          <div class="actions quiz-actions">
+            <button id="quizRestart" class="btn btn-primary" data-i18n="quiz.restart">Start over</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="panel" role="tabpanel" id="panel-list" aria-labelledby="tab-list" hidden>
+      <section class="card">
+        <div class="card-head">
+          <h2 data-i18n="list.title">My ingredients</h2>
+          <p class="hint" data-i18n="list.hint">Mark what you'll actually eat, so your shakes stay sustainable. Saved to your account.</p>
+        </div>
+        <ul id="prefList" class="pref-list"></ul>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2 data-i18n="add.title">Add an ingredient</h2>
+          <p class="hint" data-i18n="add.hint">Missing something from your shakes? Add it with macros per serving. Everyone will be able to use it.</p>
+        </div>
+        <p id="addLoginHint" class="empty" data-i18n="add.loginHint">Log in to add ingredients.</p>
+        <form id="addForm" class="add-form" hidden>
+          <label class="field span-2"><span data-i18n="add.name">Name</span><input name="name" required maxlength="60" placeholder="e.g. Mass gainer powder" data-i18n-attr="placeholder:add.namePlaceholder"></label>
+          <label class="field"><span data-i18n="add.category">Category</span>
+            <select name="category" required>
+              <option value="protein" data-i18n="category.protein">Protein</option>
+              <option value="liquid" data-i18n="category.liquid">Liquid base</option>
+              <option value="base" data-i18n="category.base">Dairy</option>
+              <option value="carbohydrate" data-i18n="category.carbohydrate">Carbs</option>
+              <option value="fat" data-i18n="category.fat">Healthy fats</option>
+              <option value="fruit" data-i18n="category.fruit">Fruit</option>
+              <option value="sweetener" data-i18n="category.sweetener">Sweeteners</option>
+              <option value="extra" data-i18n="category.extra">Seeds &amp; extras</option>
+              <option value="flavor" data-i18n="category.flavor">Flavor</option>
+            </select>
+          </label>
+          <label class="field"><span data-i18n="add.form">Form</span>
+            <select name="form" required>
+              <option value="powder" data-i18n="form.powder">Powder</option>
+              <option value="liquid" data-i18n="form.liquid">Liquid</option>
+              <option value="creamy" data-i18n="form.creamy">Creamy</option>
+              <option value="paste" data-i18n="form.paste">Paste</option>
+              <option value="syrup" data-i18n="form.syrup">Syrup</option>
+              <option value="solid" data-i18n="form.solid">Solid</option>
+              <option value="granular" data-i18n="form.granular">Granular</option>
+            </select>
+          </label>
+          <label class="field"><span data-i18n="add.servingAmount">Serving amount</span><input name="serving_amount" type="number" required min="0.01" max="10000" step="any" placeholder="1"></label>
+          <label class="field"><span data-i18n="add.servingUnit">Serving unit</span>
+            <select name="serving_unit" required>
+              <option value="g" data-i18n="unit.g">g</option>
+              <option value="ml" data-i18n="unit.ml">ml</option>
+              <option value="scoop" data-i18n="unit.scoop">scoop</option>
+              <option value="tbsp" data-i18n="unit.tbsp">tbsp</option>
+              <option value="tsp" data-i18n="unit.tsp">tsp</option>
+              <option value="cup" data-i18n="unit.cup">cup</option>
+              <option value="oz" data-i18n="unit.oz">oz</option>
+              <option value="piece" data-i18n="unit.piece">piece</option>
+              <option value="medium" data-i18n="unit.mediumOption">medium (fruit)</option>
+            </select>
+          </label>
+          <label class="field"><span data-i18n="add.calories">Calories (kcal)</span><input name="calories" type="number" required min="0" max="5000" step="any"></label>
+          <label class="field"><span data-i18n="add.protein">Protein (g)</span><input name="protein_g" type="number" required min="0" max="500" step="any"></label>
+          <label class="field"><span data-i18n="add.carbs">Carbs (g)</span><input name="carbs_g" type="number" required min="0" max="500" step="any"></label>
+          <label class="field"><span data-i18n="add.fat">Fat (g)</span><input name="fat_g" type="number" required min="0" max="500" step="any"></label>
+          <div class="actions span-2"><button id="addBtn" class="btn btn-primary" data-i18n="add.submit">Add ingredient</button></div>
+        </form>
+      </section>
+    </div>
+  </main>
+  </div>
+
+  <footer data-i18n="footer">SuperMark Mass Lab · Nutrition values are estimates per serving.</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+</body>
+</html>
