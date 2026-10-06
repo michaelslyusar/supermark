@@ -2,6 +2,7 @@
   "meta.title": "SuperMark Mass Lab",
   "meta.description": "Build high-calorie, high-protein shakes for lean weight gain.",
   "nav.sections": "Sections",
+  "nav.menu": "Menu",
   "lang.label": "Language",
 
   "tab.shake": "Shake builder",

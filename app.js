@@ -11,8 +11,9 @@ const EMOJI = {
   chia_seeds: "⚫", hemp_seeds: "🌱", dates: "🟤", honey: "🍯", cocoa_powder: "🍫",
 };
 
-// Ingredients with a picture in img/ingredients/; the rest keep their emoji.
-const ING_IMG = { whole_milk: "img/ingredients/whole_milk.png" };
+// Built-in ingredients have a 256px picture at img/ingredients/<id>.webp (full-size originals
+// are in img/ingredients/original/). Ingredients users add keep an emoji.
+const ING_IMG = Object.fromEntries(Object.keys(EMOJI).map((id) => [id, `img/ingredients/${id}.webp`]));
 
 // Fills an icon slot with the ingredient's picture, or its emoji when there is none.
 function setIngIcon(el, id) {
@@ -769,7 +770,26 @@ $("quizLike").addEventListener("click", () => answerQuiz("like"));
 $("quizDislike").addEventListener("click", () => answerQuiz("dont_like"));
 $("quizSkip").addEventListener("click", () => answerQuiz(null));
 $("quizRestart").addEventListener("click", () => { quizIndex = 0; renderQuiz(); });
-document.querySelectorAll(".tab").forEach((tab) => tab.addEventListener("click", () => showTab(tab.dataset.tab)));
+document.querySelectorAll(".tab").forEach((tab) => tab.addEventListener("click", () => {
+  showTab(tab.dataset.tab);
+  setMenu(false);
+}));
+
+// Phone menu: the hamburger shows or hides the tabs; picking a tab, Esc or a click elsewhere closes it.
+function setMenu(open) {
+  document.querySelector(".site-header").classList.toggle("menu-open", open);
+  $("menuBtn").setAttribute("aria-expanded", String(open));
+}
+$("menuBtn").addEventListener("click", () => setMenu($("menuBtn").getAttribute("aria-expanded") !== "true"));
+document.addEventListener("keydown", (ev) => {
+  if (ev.key === "Escape" && $("menuBtn").getAttribute("aria-expanded") === "true") {
+    setMenu(false);
+    $("menuBtn").focus();
+  }
+});
+document.addEventListener("click", (ev) => {
+  if (!ev.target.closest(".site-header")) setMenu(false);
+});
 document.querySelectorAll(".lang-btn").forEach((b) => b.addEventListener("click", () => setLanguage(b.dataset.lang)));
 
 let savedTab = "shake";

@@ -101,10 +101,35 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
 }
 .tab:hover { color: var(--text); }
 .tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+/* Phones: the tabs move into a drop-down opened by the hamburger button. */
+.menu-btn { display: none; }
 @media (max-width: 640px) {
   .account-name { display: none; }
-  .tabs { width: 100%; display: grid; grid-template-columns: 1fr 1fr; border-radius: 14px; }
-  .tab { padding: 8px 6px; font-size: .82rem; border-radius: 10px; }
+  .brand-name b { display: block; }   /* "SuperMark" over "Mass Lab", never split mid-name */
+  body.logged-in .site-header { grid-template-columns: auto minmax(0, 1fr) auto; }
+  body.logged-in .menu-btn {
+    display: grid;
+    place-items: center;
+    width: 40px; height: 40px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .menu-btn[aria-expanded="true"] { background: var(--surface-2); border-color: var(--line-strong); }
+  .tabs {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px;
+    border-radius: 14px;
+  }
+  .site-header.menu-open .tabs { display: flex; }
+  .tab { padding: 12px 14px; font-size: 1rem; text-align: left; border-radius: 10px; }
 }
 
 .eyebrow { margin: 0 0 6px; color: var(--muted); font-weight: 600; font-size: .9rem; }
@@ -427,26 +452,38 @@ main {
 
 /* ---------- macro panel ---------- */
 .macros { position: sticky; top: 84px; }
-/* On narrow screens the totals sit below the list, so pin a compact version to the bottom. */
+/* On narrow screens the totals sit below the list, pinned to the bottom as a compact three-row bar:
+   calories + macros, a thin goal bar, then name + log + favorite. */
 @media (max-width: 860px) {
   .macros {
     top: auto;
-    bottom: 12px;
-    padding: 14px 16px;
+    bottom: 8px;
+    padding: 10px 12px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "kcal macros" "goal goal" "name actions";
+    align-items: center;
+    gap: 6px 10px;
     box-shadow: 0 -12px 32px var(--shadow);
     border-color: var(--line-strong);
   }
-  .macros h2, .macros #selCount, .shake-name-field > span { display: none; }
-  .shake-name-field { margin-top: 10px; }
+  .macros h2, .macros #selCount, .shake-name-field > span, .macros .goal-label { display: none; }
+  .macros .kcal { grid-area: kcal; margin: 0; gap: 4px; }
+  .macros .kcal-value { font-size: 1.9rem; }
+  .macros .kcal-unit { font-size: .8rem; }
+  .macros .goal { grid-area: goal; }
+  .macros .goal-bar { height: 4px; }
+  .macros .macro-grid { grid-area: macros; justify-self: end; display: flex; gap: 4px; margin: 0; }
+  .macros .macro { padding: 2px 7px 3px; border-top-width: 2px; border-radius: 6px; }
+  .macros .macro dt { font-size: .62rem; line-height: 1.3; }
+  .macros .macro dd { font-size: .95rem; margin: 0; line-height: 1.15; }
+  .shake-name-field { grid-area: name; margin: 0; }
   .shake-name-field input { padding: 8px 10px; font-size: .9rem; }
-  .macros .kcal { margin: 0 0 8px; }
-  .macros .kcal-value { font-size: 2.4rem; }
-  .macros .goal-label { margin-top: 4px; }
-  .macros .macro-grid { margin: 10px 0 0; }
-  .macros .macro { padding: 6px 8px; }
-  .macros .macro dd { font-size: 1.25rem; }
-  .macros .actions { grid-template-columns: 1fr 1fr; margin-top: 10px; }
-  .macros .btn { padding: 10px 6px; font-size: .8rem; white-space: nowrap; }
+  aside.macros .actions { grid-area: actions; display: flex; flex-wrap: nowrap; gap: 6px; margin: 0; }
+  .macros .btn { padding: 9px 12px; font-size: .82rem; white-space: nowrap; }
+  /* Favorites becomes a star icon; its text stays in the button for screen readers. */
+  .macros #pickBtn { width: 40px; padding: 0; font-size: 0; }
+  .macros #pickBtn::before { content: "★"; font-size: 1.05rem; }
 }
 .macros h2 { font-size: 1rem; color: var(--muted); }
 .kcal { display: flex; align-items: baseline; gap: 8px; margin: 6px 0 14px; }
