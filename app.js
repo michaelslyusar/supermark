@@ -11,9 +11,9 @@ const EMOJI = {
   chia_seeds: "⚫", hemp_seeds: "🌱", dates: "🟤", honey: "🍯", cocoa_powder: "🍫",
 };
 
-// Built-in ingredients have a 256px picture at img/ingredients/<id>.webp (full-size originals
-// are in img/ingredients/original/). Ingredients users add keep an emoji.
-const ING_IMG = Object.fromEntries(Object.keys(EMOJI).map((id) => [id, `img/ingredients/${id}.webp`]));
+// Built-in ingredients have a 256px picture at assets/ingredients/<id>.webp.
+// Ingredients users add keep an emoji.
+const ING_IMG = Object.fromEntries(Object.keys(EMOJI).map((id) => [id, `assets/ingredients/${id}.webp`]));
 
 // Fills an icon slot with the ingredient's picture, or its emoji when there is none.
 function setIngIcon(el, id) {
@@ -831,7 +831,6 @@ $("authForm").addEventListener("submit", async (ev) => {
     await (mode === "signup" ? signUp(name, password) : logIn(name, password));
     $("authForm").reset();
     $("authDialog").close();
-    if (mode === "login") setStatus(t("status.welcome"), "ok");
   } catch (err) {
     $("authError").textContent = err.message;
   } finally {

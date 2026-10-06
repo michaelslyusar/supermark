@@ -152,7 +152,6 @@
   "status.logged": "Logged: {name} · {kcal} kcal",
   "status.favSaved": "Favorite stack saved.",
   "status.loggedOut": "Logged out.",
-  "status.welcome": "Welcome back.",
   "status.deleted": "Deleted “{name}”.",
   "error.delete": "Couldn't delete: {msg}",
   "status.added": "Added {name}. It's now in the shake builder.",

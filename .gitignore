@@ -1,5 +1,2 @@
 .env
 .env.*
-
-# Full-size ingredient images; the site uses the 256px .webp copies
-img/ingredients/original/

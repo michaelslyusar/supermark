@@ -167,7 +167,6 @@
   "status.logged": "Записано: {name} · {kcal} ккал",
   "status.favSaved": "Избранный набор сохранён.",
   "status.loggedOut": "Вы вышли из аккаунта.",
-  "status.welcome": "С возвращением.",
   "status.deleted": "«{name}» удалён.",
   "error.delete": "Не удалось удалить: {msg}",
   "status.added": "Ингредиент «{name}» добавлен и уже доступен в конструкторе.",

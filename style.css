@@ -53,14 +53,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
   border-bottom: 1px solid var(--line);
 }
 .brand { display: flex; align-items: center; gap: 10px; }
-.brand-mark {
-  display: grid;
-  place-items: center;
-  width: 36px; height: 36px;
-  border-radius: 10px;
-  background: var(--accent);
-  color: var(--accent-ink);
-}
+.brand-mark { display: block; flex: none; width: 40px; height: 40px; object-fit: contain; }
 .brand-name {
   font-family: var(--display);
   font-size: 1.05rem;
@@ -70,7 +63,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
 .brand-name b { font-weight: 500; color: var(--muted); }
 @media (max-width: 420px) {
   .brand { gap: 8px; }
-  .brand-mark { width: 30px; height: 30px; border-radius: 8px; }
+  .brand-mark { width: 34px; height: 34px; }
   .brand-name { font-size: .88rem; }
   .site-header { column-gap: 10px; }
   .account { flex-direction: column; align-items: flex-end; }
